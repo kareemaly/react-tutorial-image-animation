@@ -1,19 +1,37 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import styled from 'styled-components';
+import ImageBoxAnimated from './ImageBoxAnimated';
+
+const Wrapper = styled.div`
+`;
 
 class App extends Component {
+  componentWillMount() {
+    this.setState({
+      startFirstBoxAnimation: false,
+    });
+  }
+
   render() {
+    const {
+      startFirstBoxAnimation,
+    } = this.state;
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Wrapper>
+        <button onClick={() => this.setState({ startFirstBoxAnimation: true })}>Start first box</button>
+        <ImageBoxAnimated
+          image={'https://www.adventure-journal.com/wp-content/uploads/2015/06/o-the-glory-of-it-all.jpg'}
+          width={600}
+          height={400}
+          startAnimation={startFirstBoxAnimation}
+        />
+        <ImageBoxAnimated
+          image={'https://www.adventure-journal.com/wp-content/uploads/2015/06/o-the-glory-of-it-all.jpg'}
+          width={300}
+          height={200}
+          startAnimation={true}
+        />
+      </Wrapper>
     );
   }
 }
