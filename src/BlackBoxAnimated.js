@@ -4,20 +4,20 @@ import styled from 'styled-components';
 import { Motion, spring } from 'react-motion';
 
 const BlackBox = styled.div`
-  height: ${(props) => props.heightPrecentage}%;
+  height: ${(props) => props.heightPercentage}%;
   width: 100%;
   background: #000;
   transform-origin: ${(props) => props.xDirection} center;
 `;
 
-const BlackBoxAnimated = ({ startAnimation = false, heightPrecentage, reverseDirection = false }) => (
+const BlackBoxAnimated = ({ startAnimation = false, heightPercentage, reverseDirection = false }) => (
   <Motion
     defaultStyle={{ scaleX: 1 }}
     style={{ scaleX: spring(startAnimation ? 0 : 1) }}
   >
     {(style) => (
       <BlackBox
-        heightPrecentage={heightPrecentage}
+        heightPercentage={heightPercentage}
         xDirection={ reverseDirection ? `left` : `right` }
         style={{
           transform: `scaleX(${style.scaleX})`,
@@ -29,7 +29,7 @@ const BlackBoxAnimated = ({ startAnimation = false, heightPrecentage, reverseDir
 
 BlackBoxAnimated.propTypes = {
   startAnimation: PropTypes.bool,
-  heightPrecentage: PropTypes.number.isRequired,
+  heightPercentage: PropTypes.number.isRequired,
   reverseDirection: PropTypes.bool,
 };
 

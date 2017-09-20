@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import BlackBoxAnimated from './BlackBoxAnimated';
 
+const getValue = (val) => typeof val === 'string' ? val : `${val}px`;
+
 const ImageBox = styled.div`
-  width: ${(props) => props.width}px;
-  height: ${(props) => props.height}px;
+  width: ${(props) => getValue(props.width)};
+  height: ${(props) => getValue(props.height)};
   background: url('${(props) => props.image}');
   background-size: cover;
   background-position: center;
@@ -28,15 +30,28 @@ class ImageBoxAnimation extends React.Component {
     if(this.props.startAnimation !== nextProps.startAnimation) {
       if(nextProps.startAnimation) {
         this.runAnimation();
+      } else {
+        this.reverseAnimation();
       }
     }
   }
 
+  reverseAnimation = () => {
+    for (var i = 0; i < this.props.noOfRows; i++) {
+      setTimeout(this.reverseLastAnimation, i * this.props.speed);
+    }
+  }
+
   runAnimation = () => {
-    setTimeout(this.startNextAnimation, 0);
-    setTimeout(this.startNextAnimation, 500);
-    setTimeout(this.startNextAnimation, 1000);
-    setTimeout(this.startNextAnimation, 1500);
+    for (var i = 0; i < this.props.noOfRows; i++) {
+      setTimeout(this.startNextAnimation, i * this.props.speed);
+    }
+  }
+
+  reverseLastAnimation = () => {
+    this.setState({
+      animationNumber: this.state.animationNumber - 1,
+    });
   }
 
   startNextAnimation = () => {
@@ -50,6 +65,8 @@ class ImageBoxAnimation extends React.Component {
       image,
       width,
       height,
+      noOfRows,
+      ...props,
     } = this.props;
 
     const {
@@ -61,27 +78,16 @@ class ImageBoxAnimation extends React.Component {
         image={image}
         width={width}
         height={height}
+        {...props}
       >
-        <BlackBoxAnimated
-          heightPrecentage={25}
-          reverseDirection={false}
-          startAnimation={animationNumber >= 1}
-        />
-        <BlackBoxAnimated
-          heightPrecentage={25}
-          reverseDirection={true}
-          startAnimation={animationNumber >= 2}
-        />
-        <BlackBoxAnimated
-          heightPrecentage={25}
-          reverseDirection={false}
-          startAnimation={animationNumber >= 3}
-        />
-        <BlackBoxAnimated
-          heightPrecentage={25}
-          reverseDirection={true}
-          startAnimation={animationNumber >= 4}
-        />
+        {Array(noOfRows).fill().map((_, i) => (
+          <BlackBoxAnimated
+            key={i}
+            heightPercentage={100 / noOfRows}
+            reverseDirection={i % 2 === 0}
+            startAnimation={animationNumber >= i + 1}
+          />
+        ))}
       </ImageBox>
     );
   }
@@ -89,8 +95,10 @@ class ImageBoxAnimation extends React.Component {
 
 ImageBoxAnimation.propTypes = {
   image: PropTypes.string.isRequired,
-  width: PropTypes.any,
-  height: PropTypes.any,
+  width: PropTypes.any.isRequired,
+  height: PropTypes.any.isRequired,
+  noOfRows: PropTypes.number.isRequired,
+  speed: PropTypes.number.isRequired,
 }
 
 export default ImageBoxAnimation;
